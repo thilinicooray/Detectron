@@ -240,7 +240,7 @@ def main(args):
         image_id = int(im_base_name.split(".")[0].split("_")[-1])   # for COCO
         outfile = os.path.join(args.output_dir,
                                im_base_name.replace('jpg', 'npy'))
-        if not outfile.exists():
+        if not os.path.exists(outfile):
             if new_count % 2 == 0:
                 copyfile(src, 'img_dir1')
             else:
