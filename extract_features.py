@@ -236,33 +236,36 @@ def main(args):
     for i, im_name in enumerate(im_list):
         im_base_name = os.path.basename(im_name)
         image_id = int(im_base_name.split(".")[0].split("_")[-1])   # for COCO
-        if image_id % args.total_group == args.group_id:
-            bbox = image_bboxes[image_id] if image_id in image_bboxes else None
-            im = cv2.imread(im_name)
-            if im is not None:
-                outfile = os.path.join(args.output_dir, 
-                                    im_base_name.replace('jpg', 'npy'))
-                lock_folder = outfile.replace('npy', 'lock')
-                if not os.path.exists(lock_folder) and os.path.exists(outfile):
-                    continue
-                if not os.path.exists(lock_folder):
-                    os.makedirs(lock_folder)
+        outfile = os.path.join(args.output_dir,
+                               im_base_name.replace('jpg', 'npy'))
+        if outfile.exists():
+            continue
+        #if image_id % args.total_group == args.group_id:
+        bbox = image_bboxes[image_id] if image_id in image_bboxes else None
+        im = cv2.imread(im_name)
+        if im is not None:
 
-                result = get_detections_from_im(cfg, model, im, 
-                                                image_id,args.feat_name,
-                                                args.min_bboxes, 
-                                                args.max_bboxes, 
-                                                bboxes=bbox)
+            lock_folder = outfile.replace('npy', 'lock')
+            if not os.path.exists(lock_folder) and os.path.exists(outfile):
+                continue
+            if not os.path.exists(lock_folder):
+                os.makedirs(lock_folder)
 
-                np.save(outfile, result)
-                os.rmdir(lock_folder)
+            result = get_detections_from_im(cfg, model, im,
+                                            image_id,args.feat_name,
+                                            args.min_bboxes,
+                                            args.max_bboxes,
+                                            bboxes=bbox)
 
-            count += 1
+            np.save(outfile, result)
+            os.rmdir(lock_folder)
 
-            if count % 100 == 0:
-                end = timeit.default_timer()
-                epoch_time = end - start
-                print('process {:d} images after {:.1f} s'.format(count, epoch_time))
+        count += 1
+
+        if count % 100 == 0:
+            end = timeit.default_timer()
+            epoch_time = end - start
+            print('process {:d} images after {:.1f} s'.format(count, epoch_time))
 
 
 
