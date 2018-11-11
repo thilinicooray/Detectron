@@ -238,8 +238,8 @@ def main(args):
         image_id = int(im_base_name.split(".")[0].split("_")[-1])   # for COCO
         outfile = os.path.join(args.output_dir,
                                im_base_name.replace('jpg', 'npy'))
-        if outfile.exists():
-            continue
+        '''if outfile.exists():
+            continue'''
         #if image_id % args.total_group == args.group_id:
         bbox = image_bboxes[image_id] if image_id in image_bboxes else None
         im = cv2.imread(im_name)
