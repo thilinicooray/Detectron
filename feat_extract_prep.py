@@ -242,9 +242,9 @@ def main(args):
                                im_base_name.replace('jpg', 'npy'))
         if not os.path.exists(outfile):
             if new_count % 2 == 0:
-                copyfile(src, 'img_dir1')
+                copyfile(src, os.path.join('img_dir1',im_base_name))
             else:
-                copyfile(src, 'img_dir2')
+                copyfile(src, os.path.join('img_dir2',im_base_name))
             new_count += 1
             print('copied :', src)
 
